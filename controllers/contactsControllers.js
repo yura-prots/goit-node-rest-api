@@ -5,7 +5,7 @@ export const getAllContacts = async (_, res, next) => {
   try {
     const result = await contactsService.listContacts();
 
-    res.json(result);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
@@ -20,7 +20,7 @@ export const getOneContact = async (req, res, next) => {
       throw HttpError(404, `Contact with id=${id} not found`);
     }
 
-    res.json(result);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
@@ -45,7 +45,7 @@ export const updateContact = async (req, res, next) => {
       throw HttpError(404, `Contact with id=${id} not found`);
     }
 
-    res.json(result);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
@@ -60,9 +60,7 @@ export const deleteContact = async (req, res, next) => {
       throw HttpError(404, `Contact with id=${id} not found`);
     }
 
-    res.json({
-      message: "Delete success",
-    });
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
