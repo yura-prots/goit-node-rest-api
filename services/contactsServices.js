@@ -32,9 +32,9 @@ async function addContact({ name, email, phone }) {
   return newContact;
 }
 
-async function updateContactBuId(id, data) {
+async function updateContactBuId(contactId, data) {
   const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === id);
+  const index = contacts.findIndex((item) => item.id === contactId);
 
   if (index === -1) {
     return null;
@@ -46,7 +46,7 @@ async function updateContactBuId(id, data) {
   return contacts[index];
 }
 
-async function removeContact(contactId) {
+async function removeContactById(contactId) {
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === contactId);
 
@@ -78,5 +78,5 @@ export {
   getContactById,
   addContact,
   updateContactBuId,
-  removeContact,
+  removeContactById,
 };
