@@ -20,4 +20,15 @@ export const createContactSchema = Joi.object({
   }),
 });
 
-export const updateContactSchema = Joi.object({});
+export const updateContactSchema = Joi.object({
+  name: Joi.string().min(2).messages({
+    "string.min": `"name" should have a minimum length of {#limit}`,
+  }),
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ["com", "net"] },
+  }),
+  phone: Joi.string().min(7).messages({
+    "string.min": `"phone" should have a minimum length of {#limit}`,
+  }),
+});

@@ -36,6 +36,19 @@ export const createContact = async (req, res, next) => {
   }
 };
 
-export const deleteContact = (req, res) => {};
+export const updateContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await contactsService.updateContactBuId(id, req.body);
 
-export const updateContact = (req, res) => {};
+    if (!result) {
+      throw HttpError(404, `Contact with id=${id} not found`);
+    }
+
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteContact = (req, res) => {};
