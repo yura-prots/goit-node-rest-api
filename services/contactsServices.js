@@ -18,24 +18,16 @@ async function updateContacts(contacts) {
 }
 
 async function listContacts() {
-  try {
-    const data = await fs.readFile(contactsPath);
+  const data = await fs.readFile(contactsPath);
 
-    return JSON.parse(data);
-  } catch (error) {
-    console.log(error);
-  }
+  return JSON.parse(data);
 }
 
 async function getContactById(contactId) {
-  try {
-    const contacts = await listContacts();
-    const result = contacts.find((item) => item.id === contactId);
+  const contacts = await listContacts();
+  const result = contacts.find((item) => item.id === contactId);
 
-    return result || null;
-  } catch (error) {
-    console.log(error);
-  }
+  return result || null;
 }
 
 async function addContact(name, email, phone) {
@@ -75,4 +67,10 @@ async function removeContact(contactId) {
   }
 }
 
-export { listContacts, getContactById, addContact, removeContact };
+export {
+  listContacts,
+  getContactById,
+  addContact,
+  updateContacts,
+  removeContact,
+};
