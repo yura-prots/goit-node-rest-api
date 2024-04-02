@@ -3,7 +3,7 @@ import express from "express";
 import {
   getAllContacts,
   // getOneContact,
-  // createContact,
+  createContact,
   // updateContact,
   // deleteContact,
 } from "../controllers/contactsControllers.js";
@@ -19,7 +19,7 @@ contactsRouter.get("/", getAllContacts);
 
 // contactsRouter.get("/:id", getOneContact);
 
-// contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post("/", createContact);
 
 // contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
 

@@ -28,15 +28,15 @@ export const getAllContacts = async (_, res, next) => {
 //   }
 // };
 
-// export const createContact = async (req, res, next) => {
-//   try {
-//     const result = await contactsService.addContact(req.body);
+export const createContact = async (req, res, next) => {
+  try {
+    const result = await Contact.create(req.body);
 
-//     res.status(201).json(result);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // export const updateContact = async (req, res, next) => {
 //   try {
