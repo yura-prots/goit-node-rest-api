@@ -13,20 +13,20 @@ export const getAllContacts = async (_, res, next) => {
   }
 };
 
-// export const getOneContact = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const result = await contactsService.getContactById(id);
+export const getOneContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await Contact.findById(id);
 
-//     if (!result) {
-//       throw HttpError(404, `Contact with id=${id} not found`);
-//     }
+    if (!result) {
+      throw HttpError(404, `Contact with id=${id} not found`);
+    }
 
-//     res.status(200).json(result);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const createContact = async (req, res, next) => {
   try {
