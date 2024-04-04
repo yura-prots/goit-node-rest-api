@@ -1,8 +1,6 @@
 import Contact from "../models/Contact.js";
 import HttpError from "../helpers/HttpError.js";
 
-// import * as contactsService from "../services/contactsServices.js";
-
 export const getAllContacts = async (_, res, next) => {
   try {
     const result = await Contact.find();
@@ -45,10 +43,7 @@ export const updateContact = async (req, res, next) => {
     }
 
     const { id } = req.params;
-    const result = await Contact.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body
-    );
+    const result = await Contact.findOneAndUpdate({ id }, req.body);
 
     if (!result) {
       throw HttpError(404, `Contact with id=${id} not found`);
@@ -60,17 +55,19 @@ export const updateContact = async (req, res, next) => {
   }
 };
 
-// export const deleteContact = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const result = await contactsService.removeContactById(id);
+export const deleteContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await Contact.findByIdAndDelete(id);
 
-//     if (!result) {
-//       throw HttpError(404, `Contact with id=${id} not found`);
-//     }
+    if (!result) {
+      throw HttpError(404, `Contact with id=${id} not found`);
+    }
 
-//     res.status(200).json(result);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.status(200).json({
+      message: "Delete success",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
