@@ -43,7 +43,10 @@ export const updateContact = async (req, res, next) => {
     }
 
     const { id } = req.params;
-    const result = await Contact.findOneAndUpdate({ id }, req.body);
+    const result = await Contact.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body
+    );
 
     if (!result) {
       throw HttpError(404, `Contact with id=${id} not found`);
@@ -64,9 +67,7 @@ export const deleteContact = async (req, res, next) => {
       throw HttpError(404, `Contact with id=${id} not found`);
     }
 
-    res.status(200).json({
-      message: "Delete success",
-    });
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
