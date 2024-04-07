@@ -12,10 +12,11 @@ import {
   updateContactSchema,
   contactFavoriteSchema,
 } from "../models/Contact.js";
-import validateBody from "../helpers/validateBody.js";
-import validateId from "../helpers/validateId.js";
+import { authenticate, validateBody, validateId } from "../helpers/index.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", getAllContacts);
 

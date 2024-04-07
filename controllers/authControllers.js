@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
-import HttpError from "../helpers/HttpError.js";
+import { HttpError } from "../helpers/index.js";
 
 const SECRET = process.env.JWT_SECRET;
 
@@ -10,7 +10,6 @@ export const register = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-
     if (user) {
       throw HttpError(409, "Email in use");
     }
@@ -31,13 +30,11 @@ export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-
     if (!user) {
       throw HttpError(401, "Email is invalid");
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
-
     if (!passwordCompare) {
       throw HttpError(401, "Not authorized");
     }
