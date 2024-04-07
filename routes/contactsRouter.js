@@ -7,12 +7,12 @@ import {
   updateContact,
   deleteContact,
 } from "../controllers/contactsControllers.js";
-import validateBody from "../helpers/validateBody.js";
 import {
   createContactSchema,
   updateContactSchema,
   contactFavoriteSchema,
 } from "../models/Contact.js";
+import validateBody from "../helpers/validateBody.js";
 import validateId from "../helpers/validateId.js";
 
 const contactsRouter = express.Router();
