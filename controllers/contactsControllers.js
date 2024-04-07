@@ -43,10 +43,7 @@ export const updateContact = async (req, res, next) => {
     }
 
     const { id } = req.params;
-    const result = await Contact.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body
-    );
+    const result = await Contact.findOneAndUpdate({ _id: id }, req.body);
 
     if (!result) {
       throw HttpError(404, `Contact with id=${id} not found`);
