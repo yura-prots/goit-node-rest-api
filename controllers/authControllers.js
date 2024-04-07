@@ -1,7 +1,10 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
 import HttpError from "../helpers/HttpError.js";
+
+const SECRET = process.env.JWT_SECRET;
 
 export const register = async (req, res, next) => {
   try {
@@ -39,7 +42,10 @@ export const login = async (req, res, next) => {
       throw HttpError(401, "Not authorized");
     }
 
-    const token = "exampletoken";
+    const payload = {
+      id: user._id,
+    };
+    const token = jwt.sign(payload, SECRET, { expiresIn: "23h" });
 
     res.json({
       token,
