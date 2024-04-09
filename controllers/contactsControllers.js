@@ -1,9 +1,10 @@
 import Contact from "../models/Contact.js";
 import { HttpError } from "../helpers/index.js";
 
-export const getAllContacts = async (_, res, next) => {
+export const getAllContacts = async (req, res, next) => {
   try {
-    const result = await Contact.find();
+    const { _id: owner } = req.user;
+    const result = await Contact.find({ owner }, "-createdAt -updatedAt");
 
     res.status(200).json(result);
   } catch (error) {
@@ -28,7 +29,8 @@ export const getOneContact = async (req, res, next) => {
 
 export const createContact = async (req, res, next) => {
   try {
-    const result = await Contact.create(req.body);
+    const { _id: owner } = req.user;
+    const result = await Contact.create({ ...req.body, owner });
 
     res.status(201).json(result);
   } catch (error) {
