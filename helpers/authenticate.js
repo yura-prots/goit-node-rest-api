@@ -7,6 +7,10 @@ const SECRET = process.env.JWT_SECRET;
 
 const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
+  if (!authorization) {
+    throw HttpError(401, "Authorization header not found");
+  }
+
   const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
     throw HttpError(401);
