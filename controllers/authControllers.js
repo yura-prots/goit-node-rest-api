@@ -43,6 +43,7 @@ export const login = async (req, res, next) => {
       id: user._id,
     };
     const token = jwt.sign(payload, SECRET, { expiresIn: "23h" });
+    await User.findByIdAndUpdate(user._id, { token });
 
     res.json({
       token,
@@ -54,8 +55,29 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const getCurrent = (req, res) => {
-  const { email } = req.user;
+export const logout = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    if (!_id) {
+      throw HttpError(401, "Not authorized");
+    }
+    await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.json({ email });
+    res.status(204).json({
+      message: "Logout success",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCurrent = (req, res) => {
+  try {
+    const { email, subscription } = req.user;
+    if (!email) {
+      throw HttpError(401, "Not authorized");
+    }
+
+    res.status(200).json({ email, subscription });
+  } catch (error) {}
 };
