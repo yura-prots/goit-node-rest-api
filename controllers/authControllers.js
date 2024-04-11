@@ -71,7 +71,7 @@ export const logout = async (req, res, next) => {
   }
 };
 
-export const getCurrent = (req, res) => {
+export const getCurrent = (req, res, next) => {
   try {
     const { email, subscription } = req.user;
     if (!email) {
@@ -79,5 +79,7 @@ export const getCurrent = (req, res) => {
     }
 
     res.status(200).json({ email, subscription });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
