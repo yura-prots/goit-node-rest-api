@@ -71,7 +71,7 @@ export const logout = async (req, res, next) => {
   }
 };
 
-export const getCurrent = (req, res, next) => {
+export const getCurrent = async (req, res, next) => {
   try {
     const { email, subscription } = req.user;
     if (!email) {
