@@ -83,3 +83,17 @@ export const getCurrent = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateSubscription = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    if (!_id) {
+      throw HttpError(401, "Not authorized");
+    }
+    await User.findByIdAndUpdate(_id, req.body);
+
+    res.status(200).json(req.user);
+  } catch (error) {
+    next(error);
+  }
+};

@@ -65,6 +65,10 @@ export const userLoginSchema = Joi.object({
   }),
 });
 
+export const subscriptionUpdateSchema = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business").required(),
+});
+
 const User = model("user", userSchema);
 
 export default User;
