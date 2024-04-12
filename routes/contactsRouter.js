@@ -6,7 +6,11 @@ import {
   updateContactSchema,
   contactFavoriteSchema,
 } from "../models/Contact.js";
-import { authenticate, validateBody, validateId } from "../helpers/index.js";
+import {
+  authenticate,
+  validateBody,
+  validateId,
+} from "../middlewares/index.js";
 
 const contactsRouter = express.Router();
 

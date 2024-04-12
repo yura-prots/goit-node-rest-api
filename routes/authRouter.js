@@ -1,6 +1,6 @@
 import express from "express";
 
-import { validateBody, authenticate } from "../helpers/index.js";
+import { validateBody, authenticate } from "../middlewares/index.js";
 import {
   userRegisterSchema,
   userLoginSchema,
