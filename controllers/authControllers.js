@@ -6,7 +6,7 @@ import { HttpError, ctrlWrapper } from "../helpers/index.js";
 
 const SECRET = process.env.JWT_SECRET;
 
-const register = async (req, res, next) => {
+const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) {
@@ -22,7 +22,7 @@ const register = async (req, res, next) => {
   });
 };
 
-const login = async (req, res, next) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
@@ -47,7 +47,7 @@ const login = async (req, res, next) => {
   });
 };
 
-const logout = async (req, res, next) => {
+const logout = async (req, res) => {
   const { _id } = req.user;
   if (!_id) {
     throw HttpError(401, "Not authorized");
@@ -59,7 +59,7 @@ const logout = async (req, res, next) => {
   });
 };
 
-const getCurrent = async (req, res, next) => {
+const getCurrent = async (req, res) => {
   const { email, subscription } = req.user;
   if (!email) {
     throw HttpError(401, "Not authorized");
@@ -68,7 +68,7 @@ const getCurrent = async (req, res, next) => {
   res.status(200).json({ email, subscription });
 };
 
-const updateSubscription = async (req, res, next) => {
+const updateSubscription = async (req, res) => {
   const { _id } = req.user;
   if (!_id) {
     throw HttpError(401, "Not authorized");
