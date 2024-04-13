@@ -8,6 +8,10 @@ const SECRET = process.env.JWT_SECRET;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+
   const user = await User.findOne({ email });
   if (user) {
     throw HttpError(409, "Email in use");
@@ -17,8 +21,7 @@ const register = async (req, res) => {
   const newUser = await User.create({ ...req.body, password: hashPassword });
 
   res.status(201).json({
-    email: newUser.email,
-    subscription: newUser.subscription,
+    user: { email: newUser.email, subscription: newUser.subscription },
   });
 };
 
@@ -26,7 +29,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email is invalid");
+    throw HttpError(401, "Email or password invalid");
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
@@ -40,10 +43,9 @@ const login = async (req, res) => {
   const token = jwt.sign(payload, SECRET, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 
-  res.json({
+  res.status(200).json({
     token,
-    email: user.email,
-    subscription: user.subscription,
+    user: { email: user.email, subscription: user.subscription },
   });
 };
 
