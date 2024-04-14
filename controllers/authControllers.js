@@ -8,7 +8,7 @@ const SECRET = process.env.JWT_SECRET;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
+  if (!email && !password) {
     throw HttpError(401, "Email or password is wrong");
   }
 
