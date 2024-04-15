@@ -8,10 +8,6 @@ const SECRET = process.env.JWT_SECRET;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
-  if (!email && !password) {
-    throw HttpError(401, "Email or password is wrong");
-  }
-
   const user = await User.findOne({ email });
   if (user) {
     throw HttpError(409, "Email in use");
@@ -28,13 +24,10 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) {
-    throw HttpError(401, "Email or password invalid");
-  }
-
   const passwordCompare = await bcrypt.compare(password, user.password);
-  if (!passwordCompare) {
-    throw HttpError(401, "Not authorized");
+
+  if (!user || !passwordCompare) {
+    throw HttpError(401, "Email or password is wrong");
   }
 
   const payload = {
@@ -57,7 +50,7 @@ const logout = async (req, res) => {
   await User.findByIdAndUpdate(_id, { token: "" });
 
   res.status(204).json({
-    message: "Logout success",
+    message: "No Content",
   });
 };
 
