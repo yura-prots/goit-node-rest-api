@@ -1,74 +1,71 @@
 import Contact from "../models/Contact.js";
-import HttpError from "../helpers/HttpError.js";
+import { HttpError, ctrlWrapper } from "../helpers/index.js";
 
-export const getAllContacts = async (_, res, next) => {
-  try {
-    const result = await Contact.find();
+const getAllContacts = async (req, res) => {
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 20, ...filterParams } = req.query;
+  const skip = (page - 1) * limit;
+  const filter = { owner, ...filterParams };
 
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
+  const result = await Contact.find(filter, "-createdAt -updatedAt", {
+    skip,
+    limit,
+  }).populate("owner", "email");
+
+  res.status(200).json(result);
 };
 
-export const getOneContact = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await Contact.findById(id);
+const getOneContact = async (req, res) => {
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contact.findOne({ _id: id, owner });
 
-    if (!result) {
-      throw HttpError(404, `Contact with id=${id} not found`);
-    }
-
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
+  if (!result) {
+    throw HttpError(404, `Contact with id=${id} not found`);
   }
+
+  res.status(200).json(result);
 };
 
-export const createContact = async (req, res, next) => {
-  try {
-    const result = await Contact.create(req.body);
+const createContact = async (req, res) => {
+  const { _id: owner } = req.user;
+  const result = await Contact.create({ ...req.body, owner });
 
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
+  res.status(201).json(result);
 };
 
-export const updateContact = async (req, res, next) => {
-  try {
-    if (Object.keys(req.body).length === 0) {
-      throw HttpError(400, "Body must have at least one field");
-    }
-
-    const { id } = req.params;
-    const result = await Contact.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body
-    );
-
-    if (!result) {
-      throw HttpError(404, `Contact with id=${id} not found`);
-    }
-
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
+const updateContact = async (req, res) => {
+  if (Object.keys(req.body).length === 0) {
+    throw HttpError(400, "Body must have at least one field");
   }
+
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contact.findOneAndUpdate({ _id: id, owner }, req.body);
+
+  if (!result) {
+    throw HttpError(404, `Contact with id=${id} not found`);
+  }
+
+  res.status(200).json(result);
 };
 
-export const deleteContact = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await Contact.findByIdAndDelete(id);
+const deleteContact = async (req, res) => {
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contact.findOneAndDelete({ _id: id, owner });
 
-    if (!result) {
-      throw HttpError(404, `Contact with id=${id} not found`);
-    }
-
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
+  if (!result) {
+    throw HttpError(404, `Contact with id=${id} not found`);
   }
+
+  res.status(200).json(result);
+};
+
+export default {
+  getAllContacts: ctrlWrapper(getAllContacts),
+  getOneContact: ctrlWrapper(getOneContact),
+  createContact: ctrlWrapper(createContact),
+  updateContact: ctrlWrapper(updateContact),
+  deleteContact: ctrlWrapper(deleteContact),
 };
