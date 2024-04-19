@@ -8,6 +8,7 @@ import {
 } from "../models/Contact.js";
 import {
   authenticate,
+  upload,
   validateBody,
   validateId,
 } from "../middlewares/index.js";
@@ -20,6 +21,7 @@ contactsRouter.get("/", contactsControllers.getAllContacts);
 
 contactsRouter.post(
   "/",
+  upload.single("avatar"),
   validateBody(createContactSchema),
   contactsControllers.createContact
 );
