@@ -56,6 +56,7 @@ export const createContactSchema = Joi.object({
     "string.min": `"phone" should have a minimum length of {#limit}`,
   }),
   favorite: Joi.boolean(),
+  avatarURL: Joi.string(),
 });
 
 export const updateContactSchema = Joi.object({
