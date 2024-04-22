@@ -7,7 +7,7 @@ const destination = path.resolve("tmp");
 
 const storage = multer.diskStorage({
   destination,
-  filename: (req, file, cb) => {
+  filename: (_, file, cb) => {
     const uniquePrefix = `${Date.now()}_${Math.round(Math.random() * 1e9)}`;
     const filename = `${uniquePrefix}_${file.originalname}`;
 
@@ -19,20 +19,23 @@ const limits = {
   fileSize: 5 * 1024 * 1024,
 };
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (_, file, cb) => {
   const extension = file.originalname.split(".").pop();
+  const isImage = file.mimetype.includes("image");
 
   if (extension === "exe") {
     return cb(HttpError(400, "Invalid file extension"));
   }
 
-  cb(null, true);
+  if (isImage) {
+    return cb(null, true);
+  }
 };
 
 const upload = multer({
   storage,
   limits,
-  // fileFilter,
+  fileFilter,
 });
 
 export default upload;
