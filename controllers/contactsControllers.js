@@ -1,11 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
-import Jimp from "jimp";
-
 import Contact from "../models/Contact.js";
 import { HttpError, ctrlWrapper } from "../helpers/index.js";
-
-const avatarsPath = path.resolve("public", "avatars");
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
@@ -35,19 +29,7 @@ const getOneContact = async (req, res) => {
 
 const createContact = async (req, res) => {
   const { _id: owner } = req.user;
-  const { path: oldPath, filename } = req.file;
-
-  const img = await Jimp.read(oldPath);
-  await img
-    .autocrop()
-    .cover(250, 250, Jimp.HORIZONTAL_ALIGN_CENTER || Jimp.VERTICAL_ALIGN_MIDDLE)
-    .writeAsync(oldPath);
-
-  const newPath = path.join(avatarsPath, filename);
-  await fs.rename(oldPath, newPath);
-
-  const avatarURL = path.join("avatars", filename);
-  const result = await Contact.create({ ...req.body, avatarURL, owner });
+  const result = await Contact.create({ ...req.body, owner });
 
   res.status(201).json(result);
 };

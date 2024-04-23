@@ -1,6 +1,6 @@
 import express from "express";
 
-import { validateBody, authenticate } from "../middlewares/index.js";
+import { validateBody, authenticate, upload } from "../middlewares/index.js";
 import {
   userRegisterSchema,
   userLoginSchema,
@@ -12,6 +12,7 @@ const authRouter = express.Router();
 
 authRouter.post(
   "/register",
+  upload.single("avatar"),
   validateBody(userRegisterSchema),
   authControllers.register
 );

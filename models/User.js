@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
+import gravatar from "gravatar";
 
 import { handleSaveError, preUpdate } from "./hooks.js";
 
@@ -22,6 +23,12 @@ const userSchema = new Schema(
     token: {
       type: String,
       default: null,
+    },
+    avatarURL: {
+      type: String,
+      default: function () {
+        return gravatar.url(this.email, { s: "250" }, true);
+      },
     },
   },
   { versionKey: false, timestamps: true }
@@ -48,6 +55,7 @@ export const userRegisterSchema = Joi.object({
   }),
   subscription: Joi.string(),
   token: Joi.string(),
+  avatarURL: Joi.string(),
 });
 
 export const userLoginSchema = Joi.object({
