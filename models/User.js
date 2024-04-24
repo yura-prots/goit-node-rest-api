@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
-import gravatar from "gravatar";
 
 import { handleSaveError, preUpdate } from "./hooks.js";
 
@@ -26,9 +25,6 @@ const userSchema = new Schema(
     },
     avatarURL: {
       type: String,
-      default: function () {
-        return gravatar.url(this.email, { s: "250" }, true);
-      },
     },
   },
   { versionKey: false, timestamps: true }

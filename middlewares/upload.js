@@ -21,12 +21,11 @@ const limits = {
 
 const fileFilter = (_, file, cb) => {
   const extension = file.originalname.split(".").pop();
-  const isImage = file.mimetype.includes("image");
-
   if (extension === "exe") {
     return cb(HttpError(400, "Invalid file extension"));
   }
 
+  const isImage = file.mimetype.includes("image");
   if (isImage) {
     return cb(null, true);
   }
