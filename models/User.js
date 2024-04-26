@@ -23,6 +23,9 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    avatarURL: {
+      type: String,
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -48,6 +51,7 @@ export const userRegisterSchema = Joi.object({
   }),
   subscription: Joi.string(),
   token: Joi.string(),
+  avatarURL: Joi.string(),
 });
 
 export const userLoginSchema = Joi.object({
