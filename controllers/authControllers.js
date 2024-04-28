@@ -4,12 +4,14 @@ import fs from "fs/promises";
 import path from "path";
 import Jimp from "jimp";
 import gravatar from "gravatar";
+import { nanoid } from "nanoid";
 
 import User from "../models/User.js";
-import { HttpError, ctrlWrapper } from "../helpers/index.js";
+import { HttpError, ctrlWrapper, sendEmail } from "../helpers/index.js";
 
 const avatarsPath = path.resolve("public", "avatars");
 const SECRET = process.env.JWT_SECRET;
+const URL = process.env.BASE_URL;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -20,12 +22,21 @@ const register = async (req, res) => {
 
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: "250" });
+  const verificationToken = nanoid();
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
     avatarURL,
+    verificationToken,
   });
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blank" href="${URL}/users/verify/${verificationToken}">Click to verify email</a>`,
+  };
+  await sendEmail(verifyEmail);
 
   res.status(201).json({
     user: {
@@ -40,6 +51,10 @@ const login = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
+  }
+
+  if (!user.verify) {
+    throw HttpError(404, "User not found");
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
