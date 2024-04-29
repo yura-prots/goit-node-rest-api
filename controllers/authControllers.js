@@ -31,12 +31,12 @@ const register = async (req, res) => {
     verificationToken,
   });
 
-  const verificationEmail = {
+  const verifyEmail = {
     to: email,
     subject: "Verify email",
     html: `<a target="_blank" href="${URL}/users/verify/${verificationToken}">Click to verify email</a>`,
   };
-  await sendEmail(verificationEmail);
+  await sendEmail(verifyEmail);
 
   res.status(201).json({
     user: {
@@ -46,11 +46,9 @@ const register = async (req, res) => {
   });
 };
 
-const verifyEmail = async (req, res) => {
+const verify = async (req, res) => {
   const { verificationToken } = req.params;
   const user = await User.findOne({ verificationToken });
-  console.log(verificationToken);
-  console.log(user);
 
   if (!user) {
     throw HttpError(404, "User not found");
@@ -63,6 +61,30 @@ const verifyEmail = async (req, res) => {
 
   res.status(200).json({
     message: "Verification successful",
+  });
+};
+
+const resendVerify = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw HttpError(401, "Email not found");
+  }
+
+  if (user.verify) {
+    throw HttpError(400, "Email already verified");
+  }
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blank" href="${URL}/users/verify/${user.verificationToken}">Click to verify email</a>`,
+  };
+  await sendEmail(verifyEmail);
+
+  res.status(200).json({
+    message: "Verification email sent",
   });
 };
 
@@ -155,7 +177,8 @@ const updateAvatar = async (req, res) => {
 
 export default {
   register: ctrlWrapper(register),
-  verifyEmail: ctrlWrapper(verifyEmail),
+  verify: ctrlWrapper(verify),
+  resendVerify: ctrlWrapper(resendVerify),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   getCurrent: ctrlWrapper(getCurrent),

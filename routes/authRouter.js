@@ -3,6 +3,7 @@ import express from "express";
 import { validateBody, authenticate, upload } from "../middlewares/index.js";
 import {
   userRegisterSchema,
+  userEmailSchema,
   userLoginSchema,
   subscriptionUpdateSchema,
 } from "../models/User.js";
@@ -17,7 +18,13 @@ authRouter.post(
   authControllers.register
 );
 
-authRouter.get("/verify/:verificationToken", authControllers.verifyEmail);
+authRouter.get("/verify/:verificationToken", authControllers.verify);
+
+authRouter.post(
+  "/verify",
+  validateBody(userEmailSchema),
+  authControllers.resendVerify
+);
 
 authRouter.post("/login", validateBody(userLoginSchema), authControllers.login);
 

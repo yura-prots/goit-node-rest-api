@@ -60,6 +60,16 @@ export const userRegisterSchema = Joi.object({
   subscription: Joi.string(),
 });
 
+export const userEmailSchema = Joi.object({
+  email: Joi.string()
+    .required()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .messages({
+      "any.required": `"email" is a required field`,
+      "string.empty": `"email" cannot be an empty field`,
+    }),
+});
+
 export const userLoginSchema = Joi.object({
   email: Joi.string()
     .required()
