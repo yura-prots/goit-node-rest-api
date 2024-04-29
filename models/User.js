@@ -32,8 +32,7 @@ const userSchema = new Schema(
     },
     verificationToken: {
       type: String,
-      required: [true, "Verify token is required"],
-      default: "",
+      // required: [true, "Verify token is required"],
     },
   },
   { versionKey: false, timestamps: true }
@@ -59,8 +58,6 @@ export const userRegisterSchema = Joi.object({
     "string.min": `"password" should have a minimum length of {#limit}`,
   }),
   subscription: Joi.string(),
-  token: Joi.string(),
-  avatarURL: Joi.string(),
 });
 
 export const userLoginSchema = Joi.object({
