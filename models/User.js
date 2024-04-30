@@ -26,6 +26,14 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      // required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -50,8 +58,16 @@ export const userRegisterSchema = Joi.object({
     "string.min": `"password" should have a minimum length of {#limit}`,
   }),
   subscription: Joi.string(),
-  token: Joi.string(),
-  avatarURL: Joi.string(),
+});
+
+export const userEmailSchema = Joi.object({
+  email: Joi.string()
+    .required()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .messages({
+      "any.required": `"email" is a required field`,
+      "string.empty": `"email" cannot be an empty field`,
+    }),
 });
 
 export const userLoginSchema = Joi.object({
